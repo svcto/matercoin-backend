@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 //Importa as rotas
-app.use('/backoffice', routes);
+app.use('/matercoin-server', routes);
 
 //Tento conectar ao banco e, se não conseguir, mostro o erro.
 AppDataSource.initialize()
@@ -26,7 +26,7 @@ AppDataSource.initialize()
 
         //Inicio a aplicação
         app.listen(PORT, () => {
-            console.log(`Service backoffice running in port ${PORT}`);
+            console.log(`Service matercoin-server running in port ${PORT}`);
         })
 
     })

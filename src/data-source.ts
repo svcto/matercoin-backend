@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
     port: 3306,
     username: 'root',
     password: 'Koihw2017',
-    database: 'prmdb',
+    database: 'matercoin',
     synchronize: true,
     logging: true,
     entities: [Usuario, Periodo, Moeda, Movimentacao]
