@@ -1,4 +1,6 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Moeda } from "./Moeda";
 
 export enum ETipoUsuario {
     ALUNO,
@@ -45,6 +47,9 @@ export class Usuario extends BaseEntity {
 
     @Column({ nullable: false, length: 1024 })
     obs: string;
+
+    @OneToMany((type) => Moeda, (t) => t.usuario)
+    moedas: Moeda[];
 
     @CreateDateColumn()
     createdAt: Date;

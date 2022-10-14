@@ -1,5 +1,7 @@
+
 import { Periodo } from './Periodo';
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Usuario } from './Usuario';
 
 @Entity()
 export class Moeda extends BaseEntity {
@@ -24,6 +26,9 @@ export class Moeda extends BaseEntity {
 
     @Column({ nullable: false, length: 1024 })
     obs: string;
+
+    @ManyToOne(() => Usuario, {eager: true, nullable: false})
+    usuario: Usuario;
 
     @CreateDateColumn()
     createdAt: Date;
