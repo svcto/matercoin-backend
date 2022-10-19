@@ -18,6 +18,9 @@ export class Moeda extends BaseEntity {
     @Column({nullable: false})
     fabricacao: Date;
 
+    @Column({nullable: false})
+    vencimento: Date;
+
     @ManyToOne(() => Periodo, {eager: true, nullable: false})
     periodo: Periodo;
 
