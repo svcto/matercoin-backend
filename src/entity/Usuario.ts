@@ -1,7 +1,7 @@
 
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
 import { Moeda } from "./Moeda";
-
+import bcrypt from 'bcryptjs'
 export enum ETipoUsuario {
     ALUNO,
     PROFESSOR,
@@ -50,6 +50,13 @@ export class Usuario extends BaseEntity {
 
     @OneToMany((type) => Moeda, (t) => t.usuario)
     moedas: Moeda[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+
+    hashPassword() {
+        this.senha = bcrypt.hashSync(this.senha, 8)
+    }
 
     @CreateDateColumn()
     createdAt: Date;

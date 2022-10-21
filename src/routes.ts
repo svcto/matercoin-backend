@@ -4,13 +4,16 @@ import MoedaController from './controller/MoedaController';
 import MovimentacaoController from './controller/MovimentacaoController';
 import PeriodoController from './controller/PeriodoController';
 import UsuarioController from './controller/UsuarioController';
+import interceptor from './interceptor';
+import AuthController from './controller/AuthController';
 
 //Instancio o router do express
 const routes = Router();
 
 //Rotas da Usuário
+
 routes.route('/usuarios')
-    .get(UsuarioController.index, [checkJwt])
+    .get(UsuarioController.index, interceptor)
     .post(UsuarioController.create, [checkJwt]);
 
 routes.route('/usuarios/:id')

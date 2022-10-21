@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from "express";
 import config from "./config";
 import * as jwt from "jsonwebtoken";
