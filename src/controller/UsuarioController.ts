@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { QueryParam } from "routing-controllers";
 import { TypeORMError } from "typeorm";
 import { Usuario } from "../entity/Usuario";
 
@@ -33,18 +34,22 @@ class UsuarioController {
 
     public async show(request: Request, response: Response) {
         try {
-            //Pego o ID que foi enviado por request param
+            const ra = request.query.ra as string;
             const { id } = request.params;
-
-            //Verifico se veio o parametro ID
             if (!id) {
-                return response.status(400).json({ message: 'Parâmetro ID não informado' })
+                return response.status(400).json({ message: 'Parâmetros não informados' })
             }
-
-            //Busco a entity no banco pelo ID
-            const found = await Usuario.findOneBy({
-                id: Number(id)
-            });
+            let found = undefined;
+            if (id && id != "0") {
+                found = await Usuario.findOneBy({
+                    id: Number(id)
+                });
+            } else if (ra) {
+                found = await Usuario.findOneBy({
+                    ra: ra
+                });
+            }
+            
 
             //Verifico se encontrou a entidade
             if (!found) {

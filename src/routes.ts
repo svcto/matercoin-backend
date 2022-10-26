@@ -8,46 +8,48 @@ import UsuarioController from './controller/UsuarioController';
 //Instancio o router do express
 const routes = Router();
 
+routes.use(checkJwt);
+
 //Rotas da Usuário
 routes.route('/usuarios')
-    .get(UsuarioController.index, [checkJwt])
-    .post(UsuarioController.create, [checkJwt]);
+    .get(UsuarioController.index, )
+    .post(UsuarioController.create, );
 
 routes.route('/usuarios/:id')
-    .get(UsuarioController.show, [checkJwt])
-    .put(UsuarioController.update, [checkJwt])
-    .delete(UsuarioController.remove, [checkJwt]);
+    .get(UsuarioController.show, )
+    .put(UsuarioController.update, )
+    .delete(UsuarioController.remove, );
 
 //Rotas da Moeda
 routes.route('/moedas')
-    .get(MoedaController.index, [checkJwt])
-    .post(MoedaController.create, [checkJwt]);
+    .get(MoedaController.index, )
+    .post(MoedaController.create, );
 
 routes.route('/moedas/:id')
-    .get(MoedaController.show, [checkJwt])
-    .put(MoedaController.update, [checkJwt])
-    .delete(MoedaController.remove, [checkJwt]);
+    .get(MoedaController.show, )
+    .put(MoedaController.update, )
+    .delete(MoedaController.remove, );
 
 
 //Rotas da Periodos
 routes.route('/periodos')
-    .get(PeriodoController.index, [checkJwt])
-    .post(PeriodoController.create, [checkJwt]);
+    .get(PeriodoController.index, )
+    .post(PeriodoController.create, );
 
 routes.route('/periodos/:id')
-    .get(PeriodoController.show, [checkJwt])
-    .put(PeriodoController.update, [checkJwt])
-    .delete(PeriodoController.remove, [checkJwt]);
+    .get(PeriodoController.show, )
+    .put(PeriodoController.update, )
+    .delete(PeriodoController.remove, );
 
 //Rotas da Movimentos
 routes.route('/movimentos')
-    .get(MovimentacaoController.index, [checkJwt])
-    .post(MovimentacaoController.create, [checkJwt]);
+    .get(MovimentacaoController.index, )
+    .post(MovimentacaoController.create, );
 
 routes.route('/movimentos/:id')
-    .get(MovimentacaoController.show, [checkJwt])
-    .put(MovimentacaoController.update, [checkJwt])
-    .delete(MovimentacaoController.remove, [checkJwt]);
+    .get(MovimentacaoController.show, )
+    .put(MovimentacaoController.update, )
+    .delete(MovimentacaoController.remove, );
 
 
 export default routes;
