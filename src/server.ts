@@ -1,3 +1,4 @@
+import { checkJwt } from './check-jwt';
 import { AppDataSource } from './data-source';
 import express from 'express';
 import cors from 'cors';
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use('/matercoin-server', routes);
 
 //Tento conectar ao banco e, se não conseguir, mostro o erro.
-AppDataSource.initialize()
+AppDataSource.initialize() 
     .then(() => {
 
         //Inicio a aplicação
