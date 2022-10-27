@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { QueryParam } from "routing-controllers";
-import { TypeORMError } from "typeorm";
+import { Like, TypeORMError } from "typeorm";
+import { ISearchParam } from "../dto/interfaces";
 import { Usuario } from "../entity/Usuario";
 
 
@@ -8,8 +9,32 @@ class UsuarioController {
 
     public async index(request: Request, response: Response) {
         try {
+            const searchParam: ISearchParam[] = JSON.parse(request.query.params as string || "[]")
+
+            const skip = Number(request.query.skip) || 0;
+            const take = Number(request.query.take) || 10;
+
+            const where: any[] = [];
+            for (const sp of searchParam) {
+                let w;
+                if (sp.compareType == "LIKE") {
+                    w = { [sp.paramName]: Like(`%${sp.paramValue}%`) }
+                } else {
+                    w = { [sp.paramName]: sp.paramValue }
+                }
+                where.push(w)
+            }
+
+            const objs = await Usuario.find(
+                {
+                    where: where,
+                    skip: skip, take: take
+
+                });
+
+
             //Buscar TODOS os registros do banco
-            const objs = await Usuario.find();
+            //const objs = await Usuario.find();
 
             //Retorno a lista
             return response.json(objs);
@@ -17,6 +42,7 @@ class UsuarioController {
             const error = e as TypeORMError;
             return response.status(500).json({ message: error.message });
         }
+
     }
 
     public async create(request: Request, response: Response) {
@@ -49,7 +75,21 @@ class UsuarioController {
                     ra: ra
                 });
             }
-            
+
+            const nome = request.query.nome as string;
+            if (!id) {
+                return response.status(400).json({ message: 'Parâmetros não informados' })
+            }
+            if (id && id != "0") {
+                found = await Usuario.findOneBy({
+                    id: Number(id)
+                });
+            } else if (nome) {
+                found = await Usuario.findOneBy({
+                    ra: nome
+                });
+            }
+
 
             //Verifico se encontrou a entidade
             if (!found) {

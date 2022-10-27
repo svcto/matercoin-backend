@@ -1,7 +1,8 @@
 
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, BeforeInsert, BeforeUpdate, ManyToOne } from "typeorm";
 import { Moeda } from "./Moeda";
 import bcrypt from 'bcryptjs'
+import { Periodo } from "./Periodo";
 export enum ETipoUsuario {
     ALUNO,
     PROFESSOR,
@@ -50,6 +51,9 @@ export class Usuario extends BaseEntity {
 
     @OneToMany((type) => Moeda, (t) => t.usuario)
     moedas: Moeda[];
+
+    @ManyToOne(() => Periodo, {eager: true, nullable: true})
+    periodo: Periodo;
 
     @BeforeInsert()
     @BeforeUpdate()
