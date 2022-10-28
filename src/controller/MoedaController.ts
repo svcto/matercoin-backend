@@ -33,6 +33,8 @@ class MoedaController {
 
     public async show(request: Request, response: Response) {
         try {
+
+            
             //Pego o ID que foi enviado por request param
             const {id} = request.params;
 

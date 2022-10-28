@@ -5,36 +5,38 @@ import MovimentacaoController from './controller/MovimentacaoController';
 import PeriodoController from './controller/PeriodoController';
 import UsuarioController from './controller/UsuarioController';
 
+
 //Instancio o router do express
 const routes = Router();
 
 routes.use(checkJwt);
 
 //Rotas da Usuário
+
 routes.route('/usuarios')
-    .get(UsuarioController.index, )
-    .post(UsuarioController.create, );
+    .get(UsuarioController.index)
+    .post(UsuarioController.create);
 
 routes.route('/usuarios/:id')
-    .get(UsuarioController.show, )
-    .put(UsuarioController.update, )
-    .delete(UsuarioController.remove, );
+    .get(UsuarioController.show)
+    .put(UsuarioController.update)
+    .delete(UsuarioController.remove);
 
 //Rotas da Moeda
 routes.route('/moedas')
-    .get(MoedaController.index, )
-    .post(MoedaController.create, );
+    .get(MoedaController.index)
+    .post(MoedaController.create);
 
 routes.route('/moedas/:id')
-    .get(MoedaController.show, )
-    .put(MoedaController.update, )
-    .delete(MoedaController.remove, );
+    .get(MoedaController.show)
+    .put(MoedaController.update)
+    .delete(MoedaController.remove);
 
 
 //Rotas da Periodos
 routes.route('/periodos')
-    .get(PeriodoController.index, )
-    .post(PeriodoController.create, );
+    .get(PeriodoController.index)
+    .post(PeriodoController.create);
 
 routes.route('/periodos/:id')
     .get(PeriodoController.show, )
