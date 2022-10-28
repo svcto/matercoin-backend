@@ -27,7 +27,7 @@ class UsuarioController {
 
             const objs = await Usuario.find(
                 {
-                    where: where,
+                    where: where.length ? where:undefined,
                     skip: skip, take: take
 
                 });
