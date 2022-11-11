@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { QueryParam } from "routing-controllers";
+import { Body, QueryParam } from "routing-controllers";
 import { Like, TypeORMError } from "typeorm";
 import { ISearchParam } from "../dto/interfaces";
 import { Usuario } from "../entity/Usuario";
@@ -103,6 +103,45 @@ class UsuarioController {
             return response.status(500).json({ message: error.message });
         }
     }
+
+    public async moodle(request: Request, response: Response, next: any) {
+        try {
+            return response.status(200).json(request.body)
+            //Pego o ID que foi enviado por request param
+            const {ra} = request.params;
+
+            //Verifico se veio o parametro ID
+            if (!ra) {
+                return response.status(400).json({message: 'Parâmetro ID não informado'})
+            }
+
+            //Busco a entity no banco pelo RA
+            const found = await Usuario.findOneBy({
+                ra: (ra)
+            });
+
+            //Verifico se encontrou a category
+            if (!found) {
+                return response.status(404).json({message: 'Recurso não encontrado'})
+            }
+
+            //Atualizo com os nos dados
+            // await Usuario.update(found.ra, request.body);
+
+            // const novo = request.body;
+
+            // //Altero o ID para o que veio no request
+            // novo.ra = found.ra;
+
+            //Retorno a entidade encontrada
+            //return response.json(novo);
+        } catch (e) {
+            const error = e as TypeORMError;
+            return response.status(500).json({message: error.message});
+        }
+    }
+
+
 
     public async update(request: Request, response: Response) {
         try {

@@ -122,6 +122,7 @@ class MoedaController {
         }
     }
 
+    
     public async remove(request: Request, response: Response) {
         try {
             //Pego o ID que foi enviado por request param
