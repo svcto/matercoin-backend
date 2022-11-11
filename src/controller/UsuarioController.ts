@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { QueryParam } from "routing-controllers";
+import { Body, QueryParam } from "routing-controllers";
 import { Like, TypeORMError } from "typeorm";
 import { ISearchParam } from "../dto/interfaces";
 import { Usuario } from "../entity/Usuario";
@@ -104,10 +104,9 @@ class UsuarioController {
         }
     }
 
-    public async moodle(request: Request, response: Response) {
+    public async moodle(request: Request, response: Response, next: any) {
         try {
-
-            return response.status(200).json(request.body||{})
+            return response.status(200).json(request.body)
             //Pego o ID que foi enviado por request param
             const {ra} = request.params;
 

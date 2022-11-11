@@ -12,10 +12,9 @@ const routes = Router();
 routes.use(checkJwt);
 
 //Rotas da Usuário
-
-routes.route('/moodle')
-    .post(UsuarioController.moodle)
-    .post(UsuarioController.create);
+const multer = require("multer")
+const upload = multer({storage: multer.memoryStorage()})
+routes.post("/moodle", upload.none(), UsuarioController.moodle)
 
 routes.route('/usuarios')
     .get(UsuarioController.index)
