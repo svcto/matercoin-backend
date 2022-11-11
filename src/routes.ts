@@ -13,6 +13,10 @@ routes.use(checkJwt);
 
 //Rotas da Usuário
 
+routes.route('/moodle')
+    .post(UsuarioController.moodle)
+    .post(UsuarioController.create);
+
 routes.route('/usuarios')
     .get(UsuarioController.index)
     .post(UsuarioController.create);
