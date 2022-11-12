@@ -17,6 +17,8 @@ const PORT = process.env.PORT || 3301;
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded());
+
 
 //Importa as rotas
 app.use('/matercoin-server', routes);

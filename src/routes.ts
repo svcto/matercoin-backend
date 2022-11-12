@@ -14,7 +14,7 @@ routes.use(checkJwt);
 //Rotas da Usuário
 const multer = require("multer")
 const upload = multer({storage: multer.memoryStorage()})
-routes.post("/moodle", upload.none(), UsuarioController.moodle)
+routes.post("/moodle", UsuarioController.moodle)
 
 routes.route('/usuarios')
     .get(UsuarioController.index)
