@@ -141,6 +141,28 @@ class UsuarioController {
         }
     }
 
+    public async localizaUsuario(request: Request, response: Response) {
+        try {
+                const ra = request.param("ext_user_username") as string;
+    
+                //Verifico se encontrou a entidade
+                let found = undefined;
+                found = await Usuario.findOneBy({
+                    id: Number(ra)
+                });
+                if (!found) {
+                    return response.status(404).json({ message: 'Recurso não encontrado' })
+                }
+    
+                //Retorno a entidade encontrada
+                return response.json(found);
+            } catch (e) {
+                const error = e as TypeORMError;
+                return response.status(500).json({ message: error.message });
+            }
+        }
+    
+    
 
 
     public async update(request: Request, response: Response) {
