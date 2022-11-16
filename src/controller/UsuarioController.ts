@@ -143,12 +143,13 @@ class UsuarioController {
 
     public async localizaUsuario(request: Request, response: Response) {
         try {
+                ///const searchParam: ISearchParam[] = JSON.parse(request.query.params as string || "[]")
                 const ra = request.param("ext_user_username") as string;
     
                 //Verifico se encontrou a entidade
                 let found = undefined;
                 found = await Usuario.findOneBy({
-                    id: Number(ra)
+                    ra: (ra)
                 });
                 if (!found) {
                     return response.status(404).json({ message: 'Recurso não encontrado' })
