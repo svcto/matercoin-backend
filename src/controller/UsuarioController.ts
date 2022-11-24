@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { Body, QueryParam } from "routing-controllers";
+import { Body, Param, QueryParam } from "routing-controllers";
 import { Like, TypeORMError } from "typeorm";
 import { ISearchParam } from "../dto/interfaces";
+import { Periodo } from "../entity/Periodo";
 import { Usuario } from "../entity/Usuario";
 
 
@@ -108,33 +109,6 @@ class UsuarioController {
         try {
             return response.status(200).json(request.body)
             //Pego o ID que foi enviado por request param
-            const {ra} = request.params;
-
-            //Verifico se veio o parametro ID
-            if (!ra) {
-                return response.status(400).json({message: 'Parâmetro ID não informado'})
-            }
-
-            //Busco a entity no banco pelo RA
-            const found = await Usuario.findOneBy({
-                ra: (ra)
-            });
-
-            //Verifico se encontrou a category
-            if (!found) {
-                return response.status(404).json({message: 'Recurso não encontrado'})
-            }
-
-            //Atualizo com os nos dados
-            // await Usuario.update(found.ra, request.body);
-
-            // const novo = request.body;
-
-            // //Altero o ID para o que veio no request
-            // novo.ra = found.ra;
-
-            //Retorno a entidade encontrada
-            //return response.json(novo);
         } catch (e) {
             const error = e as TypeORMError;
             return response.status(500).json({message: error.message});
@@ -144,19 +118,50 @@ class UsuarioController {
     public async localizaUsuario(request: Request, response: Response) {
         try {
                 ///const searchParam: ISearchParam[] = JSON.parse(request.query.params as string || "[]")
-                const ra = request.param("ext_user_username") as string;
+                const raMoodle = request.param("ext_user_username") as string;
     
                 //Verifico se encontrou a entidade
-                let found = undefined;
-                found = await Usuario.findOneBy({
-                    ra: (ra)
+                let foundRa = undefined;
+                foundRa = await Usuario.findOneBy({
+                    ra: (raMoodle)
                 });
-                if (!found) {
-                    return response.status(404).json({ message: 'Recurso não encontrado' })
-                }
-    
+                if (!foundRa) {  
+
+                    const descricaoPeriodo = request.param("context_title") as string;
+                    let foundPeriodo = undefined;
+                    foundPeriodo = await Periodo.findOneBy({
+                        descricao: String (descricaoPeriodo)
+                    })
+                    let periodo = new Periodo()
+                    if (!foundPeriodo) {
+                        periodo.descricao = descricaoPeriodo
+                        Periodo.save(periodo);
+                    } else {
+                        periodo = foundPeriodo;
+                    }
+                    
+
+                    const nome = request.param("lis_person_name_full");
+                    const email = request.param("lis_person_contact_email_primary");
+                    const ativo = "S"
+                    const saldo = 0.00;
+                    
+                    let usuario: Usuario = new Usuario()
+                    usuario.nome = String(nome);
+                    usuario.ativo = ativo;
+                    usuario.email = String(email);
+                    usuario.saldo = Number(saldo);
+                    usuario.senha = "";
+                    usuario.periodo = periodo;  
+                    usuario.ra = raMoodle;
+                    Usuario.save(usuario);    
+                        //Retorno a entidade inserida
+                        //return response.status(201).json(entidade);
+                    return response.json({ message: 'usuario cadastrado' })
+                }                    
+        
                 //Retorno a entidade encontrada
-                return response.json(found);
+               return response.json(foundRa);
             } catch (e) {
                 const error = e as TypeORMError;
                 return response.status(500).json({ message: error.message });

@@ -34,7 +34,7 @@ export class Usuario extends BaseEntity {
     @Column({ nullable: false, length: 255 })
     email: string;
 
-    @Column({ nullable: false, length: 255 })
+    @Column({ nullable: true, length: 255 })
     contato: string;
 
     @Column({ nullable: false, length: 1 })
@@ -43,10 +43,10 @@ export class Usuario extends BaseEntity {
     @Column("decimal", { precision: 2, scale: 2 })
     saldo: number;
 
-    @Column({ nullable: false, length: 1024 })
+    @Column({ nullable: true, length: 1024 })
     condicoes: string;
 
-    @Column({ nullable: false, length: 1024 })
+    @Column({ nullable: true, length: 1024 })
     obs: string;
 
     @OneToMany((type) => Moeda, (t) => t.usuario)
@@ -54,13 +54,6 @@ export class Usuario extends BaseEntity {
 
     @ManyToOne(() => Periodo, {eager: true, nullable: true})
     periodo: Periodo;
-
-    @BeforeInsert()
-    @BeforeUpdate()
-
-    hashPassword() {
-        this.senha = bcrypt.hashSync(this.senha, 8)
-    }
 
     @CreateDateColumn()
     createdAt: Date;
