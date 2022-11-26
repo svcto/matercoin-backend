@@ -43,7 +43,10 @@ class MoedaController {
 
   public async create(request: Request, response: Response) {
     try {
-      request.body.id = null;
+      if (request.body.id && request.body.id <= 0) {
+        request.body.id = null;
+      }
+
       //Salvo no banco a entidade que veio na requisição
       const category = await Moeda.save(request.body);
 

@@ -5,7 +5,10 @@ import * as jwt from "jsonwebtoken";
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     //Get the jwt token from the head
-    const token = <string>req.headers["auth"];
+    let token = <string>req.headers["auth"];
+    if (!token) {
+      token = req.body['custom_token'];
+    }
     let jwtPayload;
   
     //Try to validate the token and get data
