@@ -17,7 +17,8 @@ const upload = multer({storage: multer.memoryStorage()})
 routes.post("/moodle", UsuarioController.moodle)
 
 routes.route('/localiza')
-    .post(UsuarioController.localizaUsuario);
+    .post(UsuarioController.localizaUsuario)
+    .get(UsuarioController.showByToken);
 
 routes.route('/usuarios')
     .get(UsuarioController.index)

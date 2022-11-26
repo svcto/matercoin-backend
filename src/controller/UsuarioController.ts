@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { Body, Param, QueryParam } from "routing-controllers";
 import { Like, TypeORMError } from "typeorm";
 import { ISearchParam } from "../dto/interfaces";
 import { Periodo } from "../entity/Periodo";
 import { Usuario } from "../entity/Usuario";
+import * as jwt from "jsonwebtoken";
+import config from "./../config";
 
 class UsuarioController {
   public async index(request: Request, response: Response) {
@@ -54,6 +55,19 @@ class UsuarioController {
       const error = e as TypeORMError;
       return response.status(500).json({ message: error.message });
     }
+  }
+
+  public async showByToken(request: Request, response: Response) {
+    let jwtPayload;
+    try {
+      jwtPayload = <any>jwt.verify(request.query.token as string, config.jwtSecret);
+    } catch (error) {
+      //If token is not valid, respond with 401 (unauthorized)
+      return response
+        .status(401)
+        .send("Não foi possível autorizar a requisição.");
+    }
+    return response.json(jwtPayload);
   }
 
   public async show(request: Request, response: Response) {
@@ -117,6 +131,7 @@ class UsuarioController {
 
   public async localizaUsuario(request: Request, response: Response) {
     try {
+      const urlApp = "http://localhost:4200/#/";
       ///const searchParam: ISearchParam[] = JSON.parse(request.query.params as string || "[]")
       const raMoodle = request.param("ext_user_username") as string;
 
@@ -152,34 +167,48 @@ class UsuarioController {
         usuario.senha = "";
         usuario.periodo = periodo;
         usuario.ra = raMoodle;
-        await Usuario.save(usuario);
+        usuario = await Usuario.save(usuario);
+        const newToken = jwt.sign(
+          { userId: usuario.id, username: usuario.nome },
+          config.jwtSecret
+        );
+        response.setHeader("token", newToken);
         //Retorno a entidade inserida
         //return response.status(201).json(entidade);
         return response.send(`
-                        <html>
-                         <head>
-                             <title>MaterCoin</title>
-                         </head>
-                         <body>
-                             <i>Redirecionando para o aplicativo...</i>
-                             
-                         </body> 
-                        </html>
-                        `);
-      }
-
-      //Retorno a entidade encontrada
-      return response.send(`
-               <html>
+            <html>
                 <head>
                     <title>MaterCoin</title>
                 </head>
                 <body>
                     <i>Redirecionando para o aplicativo...</i>
-
+                    <script>
+                    window.location.href = "${urlApp}?token=${newToken}";
+                    </script>
                 </body> 
-               </html>
-               `);
+            </html>
+            `);
+      }
+      const newToken = jwt.sign(
+        { userId: foundRa.id, username: foundRa.nome },
+        config.jwtSecret
+      );
+      response.setHeader("token", newToken);
+
+      //Retorno a entidade encontrada
+      return response.send(`
+        <html>
+        <head>
+            <title>MaterCoin</title>
+        </head>
+        <body>
+            <i>Redirecionando para o aplicativo...</i>
+            <script>
+                window.location.href = "${urlApp}?token=${newToken}";
+            </script>
+        </body> 
+        </html>
+        `);
     } catch (e) {
       const error = e as TypeORMError;
       return response.status(500).json({ message: error.message });
