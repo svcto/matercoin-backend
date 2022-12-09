@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Like, TypeORMError } from "typeorm";
 import { ISearchParam } from "../dto/interfaces";
 import { Periodo } from "../entity/Periodo";
-import { Usuario } from "../entity/Usuario";
+import { ETipoUsuario, Usuario } from "../entity/Usuario";
 import * as jwt from "jsonwebtoken";
 import config from "./../config";
 
@@ -61,6 +61,12 @@ class UsuarioController {
     let jwtPayload;
     try {
       jwtPayload = <any>jwt.verify(request.query.token as string, config.jwtSecret);
+      if (jwtPayload.role == undefined) {
+        const u = await Usuario.findOneBy({id: Number(jwtPayload['userId'])});
+        if (u) {
+          jwtPayload.role = u.tipo;
+        }
+      }
     } catch (error) {
       //If token is not valid, respond with 401 (unauthorized)
       return response
@@ -134,7 +140,7 @@ class UsuarioController {
       const urlApp = "http://localhost:4200/#/";
       ///const searchParam: ISearchParam[] = JSON.parse(request.query.params as string || "[]")
       const raMoodle = request.param("ext_user_username") as string;
-
+      const role = request.param("roles") as string;
       //Verifico se encontrou a entidade
       let foundRa = undefined;
       foundRa = await Usuario.findOneBy({
@@ -167,9 +173,14 @@ class UsuarioController {
         usuario.senha = "";
         usuario.periodo = periodo;
         usuario.ra = raMoodle;
+        if (role.trim() == 'Learner') {
+          usuario.tipo = ETipoUsuario.ALUNO;
+        } else {
+          usuario.tipo = ETipoUsuario.PROFESSOR;
+        }
         usuario = await Usuario.save(usuario);
         const newToken = jwt.sign(
-          { userId: usuario.id, username: usuario.nome },
+          { userId: usuario.id, username: usuario.nome, role: usuario.tipo },
           config.jwtSecret
         );
         response.setHeader("token", newToken);
